@@ -130,6 +130,10 @@ func main() {
 
 					input = nil
 
+					if len(result.Errors) > 10 {
+						log.Printf("Sample error: %+v", result.Errors[0])
+					}
+
 					atomic.AddUint64(&deletes, uint64(len(result.Deleted)))
 					atomic.AddUint64(&errors, uint64(len(result.Errors)))
 				}
