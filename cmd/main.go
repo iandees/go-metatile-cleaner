@@ -94,11 +94,11 @@ func main() {
 	}()
 	log.Printf("Started tiles generator source")
 
-	var deletes uint64
+	var deletes, errors uint64
 	ticker := time.NewTicker(1 * time.Second)
 	go func() {
 		for range ticker.C {
-			log.Printf("Deleted %d objects", atomic.LoadUint64(&deletes))
+			log.Printf("Deleted %d objects (%d errors)", atomic.LoadUint64(&deletes), atomic.LoadUint64(&errors))
 		}
 	}()
 
@@ -131,6 +131,7 @@ func main() {
 					input = nil
 
 					atomic.AddUint64(&deletes, uint64(len(result.Deleted)))
+					atomic.AddUint64(&errors, uint64(len(result.Errors)))
 				}
 			}
 
@@ -141,6 +142,7 @@ func main() {
 				}
 
 				atomic.AddUint64(&deletes, uint64(len(result.Deleted)))
+				atomic.AddUint64(&errors, uint64(len(result.Errors)))
 			}
 		}()
 	}
@@ -150,5 +152,5 @@ func main() {
 	sinkWaitGroup.Wait()
 	ticker.Stop()
 
-	log.Printf("Done. Deleted %d metatiles.", atomic.LoadUint64(&deletes))
+	log.Printf("Done. Deleted %d metatiles with %d errors.", atomic.LoadUint64(&deletes), atomic.LoadUint64(&errors))
 }
