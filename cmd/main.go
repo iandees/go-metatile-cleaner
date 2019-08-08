@@ -81,7 +81,7 @@ func main() {
 	sourceWaitGroup.Add(1)
 	go func() {
 		defer sourceWaitGroup.Done()
-		for z := uint(0); z < *maxZoom; z++ {
+		for z := uint(0); z <= *maxZoom; z++ {
 			tile.GenerateTiles(&tile.GenerateTilesOptions{
 				Bounds: &tile.LngLatBbox{-180.0, -90.0, 180.0, 90.0},
 				Zooms:  []uint{z},
